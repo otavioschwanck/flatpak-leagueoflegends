@@ -1,5 +1,7 @@
 First install flatpak for your distro. Then:
 
+git clone http://www.github.com/gloriouseggroll/flatpak-leagueoflegends.git
+cd flatpak-leagueoflegends
  ./flatpak-make leagueoflegends leagueoflegends LeagueClient.exe
 cd target/[Flatpak-Riot\ Games]leagueoflegends/
 chmod +x *.sh
