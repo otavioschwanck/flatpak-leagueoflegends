@@ -1,0 +1,1 @@
+{"pluginDependencies": {"rcp-fe-viewport": "0.0.43", "rcp-fe-lcu-bootstrap-ui": "0.0.2"}, "riotMeta": {"hasBundledAssets": true, "app": "lol", "feature": "Shared", "subtype": "ui", "globalAssetBundles": ["assets.wad"], "type": "frontend"}, "version": "0.0.12", "name": "rcp-fe-lcu-bootstrap"}
