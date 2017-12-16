@@ -1,7 +1,7 @@
 First install flatpak for your distro. 
 
 
-**To build the flatpak:**
+**To build the flatpak:**  
 Install lutris for your distro: https://lutris.net/  
 
 In lutris menus: Lutris>Manage Runners>Wine>Manage Versions  
@@ -14,7 +14,7 @@ cd flatpak-leagueoflegends
  ./flatpak-make leagueoflegends leagueoflegends LeagueClient.exe  
 cd target/[Flatpak-Riot\ Games]leagueoflegends/  
 
-**To install the flatpak:**
+**To install the flatpak:**  
 chmod +x *.sh  
 ./install  
 ./run  
