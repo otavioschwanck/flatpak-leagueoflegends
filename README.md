@@ -1,6 +1,6 @@
 First install flatpak for your distro. Then:
 
- ./flatpak-make appname sourcename(leagueoflegends) exename(no path)
+ ./flatpak-make leagueoflegends leagueoflegends LeagueClient.exe
 cd target/[Flatpak-Riot\ Games]leagueoflegends/
 chmod +x *.sh
 ./install
