@@ -37,6 +37,7 @@ mkdir -p /tmp/wine.$$.prefix/
 export WINEPREFIX=\$HOME/.local/share/flatpak-riotgames/$NAME/
 export WINEDLLOVERRIDES="mscoree=d;mshtml=d;"
 export WINEEXE="$WINEEXE"
+export WINEDEBUG=-all
 export MESA_GLTHREAD=true
 export __GL_THREADED_OPTIMIZATIONS=1
 
