@@ -1,1 +1,0 @@
-{"pluginDependencies": {}, "riotMeta": {"hasBundledAssets": true, "app": "lol", "feature": "Shared", "subtype": "ui", "globalAssetBundles": ["assets.wad"], "type": "frontend"}, "version": "0.0.77", "name": "rcp-fe-viewport"}

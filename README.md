@@ -15,12 +15,15 @@ cd flatpak-leagueoflegends
 cd target/[Flatpak-Riot\ Games]leagueoflegends/  
 
 **To install the flatpak:**  
-chmod +x *.sh  
-./install  
-./run  
+flatpak --user remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo  
+flatpak --user install -y --app --bundle "leagueoflegends.flatpak"  
+flatpak --user install flathub org.freedesktop.Platform.GL.default/i386/1.6  
+flatpak run org.RiotGames.leagueoflegends  
 
 if you need to remove:  
-./uninstall  
+(If you need to make a backup of your League install, copy the Riot Games folder from ~/.local/share/flatpak-riotgames/leagueoflegends/drive_c/)  
+flatpak --user uninstall org.RiotGames.leagueoflegends  
+sudo rm -R ~/.local/share/flatpak-riotgames  
 
 wine prefix is located in ~/.local/share/flatpak-riotgames/leagueoflegends  
 see leagueoflegends.md located inside the wine prefix for useful wine commands.  

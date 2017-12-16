@@ -1,4 +1,0 @@
-install:
-    globals:
-        locale: en_US
-        region: NA

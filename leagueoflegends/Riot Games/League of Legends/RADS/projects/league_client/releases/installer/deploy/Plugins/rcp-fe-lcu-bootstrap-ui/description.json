@@ -1,1 +1,0 @@
-{"pluginDependencies": {"rcp-fe-common-libs": "1.0.3", "rcp-fe-lol-uikit": "0.1.2", "rcp-fe-audio": "0.0.14", "rcp-fe-lol-l10n": "0.0.37"}, "riotMeta": {"hasBundledAssets": true, "app": "lol", "feature": "Shared", "subtype": "ui", "globalAssetBundles": ["assets.wad"], "type": "frontend"}, "version": "0.0.62", "name": "rcp-fe-lcu-bootstrap-ui"}

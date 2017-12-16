@@ -1,1 +1,0 @@
-{"pluginDependencies": {"rcp-fe-lol-typekit": "0.1.0", "rcp-fe-viewport": "0.0.42", "rcp-fe-audio": "0.0.28", "rcp-fe-lol-lock-and-load": "0.0.12", "rcp-fe-common-libs": "1.0.28"}, "riotMeta": {"hasBundledAssets": true, "app": "lol", "feature": "Shared", "subtype": "ui", "globalAssetBundles": ["assets.wad"], "type": "frontend"}, "version": "0.4.1", "name": "rcp-fe-lol-uikit"}

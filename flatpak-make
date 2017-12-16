@@ -8,7 +8,6 @@ EXE="$1"; shift
 
 # wine bottle location
 [ -z "$WINE" ] && WINE=~/.local/share/lutris/runners/wine/staging-2.21-i386
-[ -z "$WINETRICKS" ] && WINETRICKS=/usr/bin/winetricks
 
 NICE_NAME=$(echo $(echo "$NAME" | sed 's/[A-Z]/ \0/g'))
 DOT_NAME=$(echo "$NICE_NAME" | tr " " . )
@@ -17,6 +16,7 @@ SRCLIB="/usr/lib/"
 LDLINUX=""
 ARCH="x86_64"
 LIB="lib64"
+SRCBIN="/usr/bin"
 
 if [[ "$WINE" == *"i386"* ]] ; then
 	WINEEXE="/app/bin/wine"
@@ -24,6 +24,7 @@ if [[ "$WINE" == *"i386"* ]] ; then
 	LDLINUX=$SRCLIB/ld-linux.so.2
 	ARCH="i386"
 	LIB="lib"
+	SRCBIN="/usr/bin"
 fi
 
 mkdir -p target/package/files/bin
@@ -37,19 +38,20 @@ mkdir -p /tmp/wine.$$.prefix/
 export WINEPREFIX=\$HOME/.local/share/flatpak-riotgames/$NAME/
 export WINEDLLOVERRIDES="mscoree=d;mshtml=d;"
 export WINEEXE="$WINEEXE"
-export WINEDEBUG=-all
 export MESA_GLTHREAD=true
 export __GL_THREADED_OPTIMIZATIONS=1
 
 cd "/app/$(basename "$APP")"
 
-if ! [ -e "$WINEPREFIX/drive_c/Riot Games" ] ; then
+if ! [ -e "\$WINEPREFIX/drive_c/Riot Games" ] ; then
 	winetricks -q directx9 winxp &&
+	curl -L -o "\$WINEPREFIX/drive_c/LeagueInstallerNA.exe" https://riotgamespatcher-a.akamaihd.net/releases/live/installer/deploy/League%20of%20Legends%20installer%20NA.exe
 	$WINEEXE regedit /C $NAME.reg &&
-	cp -R "Riot Games" "\$WINEPREFIX/drive_c/" && 
 	cp $NAME.md "\$WINEPREFIX/$NAME.md" &&
 	sed -i 's/FLATPAKNAME/org.RiotGames.$NAME/g' "\$WINEPREFIX/$NAME.md" &&
 	sed -i "s|WINEPREFIX|\$WINEPREFIX|" "\$WINEPREFIX/$NAME.md"
+	$WINEEXE "\$WINEPREFIX/drive_c/LeagueInstallerNA.exe" \$@
+	exit $?
 fi
 
 if [ "\$1" == "winecfg" ] ; then
@@ -83,40 +85,11 @@ devices=dri;
 filesystems=xdg-documents;~/.local/share/flatpak-riotgames/:create
 EOF
 
-cat << EOF >target/\[Flatpak-Riot\ Games\]$DOT_NAME/install.sh
-#!/bin/bash
-# Installs game bundle for user.
-# You can delete everything after installation.
-
-DIR=\$(dirname "\$0")
-set -ex
-flatpak --user remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo || true
-flatpak --user install -y --app --bundle "\$DIR/$NAME.flatpak" || echo "Installation failed. Check if you have Flatpak properly configured. See http://flatpak.org/ for more info."
-flatpak --user install flathub org.freedesktop.Platform.GL.default/$ARCH/1.6
-EOF
-
-cat << EOF >target/\[Flatpak-Riot\ Games\]$DOT_NAME/uninstall.sh
-#!/bin/bash
-# You can as well use package manager to uninstall the game
-echo You can as well use package manager to uninstall the game
-
-set -ex
-flatpak --user uninstall org.RiotGames.$NAME
-flatpak --user uninstall org.freedesktop.Platform.GL.default/$ARCH/1.6
-rm -R ~/.local/share/flatpak-riotgames/$NAME
-EOF
-
-cat << EOF >target/\[Flatpak-Riot\ Games\]$DOT_NAME/run.sh
-#!/bin/bash
-set -ex
-flatpak run org.RiotGames.$NAME \$@
-EOF
-
 cat << EOF >target/package/export/share/applications/org.RiotGames.$NAME.desktop
 [Desktop Entry]
 Version=1.0
 Name=$NICE_NAME
-Exec=run.sh
+Exec=flatpak run org.RiotGames.leagueoflegends $@
 Icon=org.RiotGames.$NAME.ico
 StartupNotify=true
 Terminal=false
@@ -129,7 +102,7 @@ set -ex
 [ -e "$APP"/icon.ico ] && cp "$APP"/icon.ico target/package/export/share/icons/hicolor/org.RiotGames.$NAME.ico
 cp -rd "$APP" target/package/files/
 cp -rd $WINE/bin $WINE/$LIB $WINE/share target/package/files/
-cp $WINETRICKS target/package/files/bin/
+cp -d $SRCBIN/winetricks target/package/files/bin/
 
 find target/package/files/$LIB -iname "*libz*" -print -delete
 [ ! -z $LDLINUX ] && cp $LDLINUX target/package/files/$LIB
@@ -141,9 +114,6 @@ cp -d $SRCLIB/libldap_r* target/package/files/lib
 
 chmod +x target/package/files/bin/run.sh
 chmod +x target/package/files/bin/winetricks
-chmod +x target/\[Flatpak-Riot\ Games\]$DOT_NAME/install.sh
-chmod +x target/\[Flatpak-Riot\ Games\]$DOT_NAME/uninstall.sh
-chmod +x target/\[Flatpak-Riot\ Games\]$DOT_NAME/run.sh
 
 flatpak build-export target/repo target/package
 flatpak build-bundle --arch=$ARCH target/repo target/\[Flatpak-Riot\ Games\]$DOT_NAME/$NAME.flatpak org.RiotGames.$NAME

@@ -1,1 +1,0 @@
-{"pluginDependencies": {"rcp-fe-common-libs": "1.0.24"}, "riotMeta": {"hasBundledAssets": true, "app": "lol", "feature": "Localization", "subtype": "l10n", "globalAssetBundles": ["assets.wad"], "type": "frontend"}, "version": "0.0.628", "name": "rcp-fe-l10n"}
