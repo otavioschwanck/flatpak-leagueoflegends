@@ -37,8 +37,8 @@ cat << EOF > target/package/files/bin/run.sh
 #!/bin/bash
 mkdir -p /tmp/wine.$$.prefix/
 export WINEPREFIX=\$HOME/.local/share/flatpak-riotgames/$NAME/
-export WINEDLLOVERRIDES="mscoree=d;mshtml=d;"
 export WINEEXE="$WINEEXE"
+export WINEDEBUG="-all"
 export GPU_MAX_HEAP_SIZE="100"
 export GPU_MAX_ALLOC_PERCENT="100"
 export MESA_GLTHREAD=true
