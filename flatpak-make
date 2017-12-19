@@ -114,43 +114,16 @@ find target/package/files/$LIB -iname "*libz*" -print -delete
 
 # league of legends
 curl -L -O http://security.ubuntu.com/ubuntu/pool/main/s/systemd/libudev1_229-4ubuntu10_$ARCH.deb
-curl -L -O http://security.ubuntu.com/ubuntu/pool/main/w/wget/wget_1.17.1-1ubuntu1.3_$ARCH.deb
-curl -L -O http://security.ubuntu.com/ubuntu/pool/main/p/perl/perl_5.22.1-9ubuntu0.2_$ARCH.deb
 curl -L -O http://mirrors.kernel.org/ubuntu/pool/main/libp/libpng/libpng12-0_1.2.54-1ubuntu1_$ARCH.deb
-curl -L -O http://mirrors.kernel.org/ubuntu/pool/multiverse/u/unrar-nonfree/unrar_5.3.2-1_$ARCH.deb
-curl -L -O http://mirrors.kernel.org/ubuntu/pool/universe/c/cabextract/cabextract_1.6-1_$ARCH.deb
-curl -L -O http://mirrors.kernel.org/ubuntu/pool/universe/libp/libpsl/libpsl0_0.11.0-2_$ARCH.deb
-curl -L -O http://mirrors.kernel.org/ubuntu/pool/universe/c/clisp/clisp-module-gdbm_2.49-9ubuntu1_$ARCH.deb
-curl -L -O http://mirrors.kernel.org/ubuntu/pool/universe/p/p7zip/p7zip_9.20.1~dfsg.1-4.2_$ARCH.deb
-curl -L -O http://mirrors.kernel.org/ubuntu/pool/main/libm/libmspack/libmspack0_0.6-3_$ARCH.deb
 
 ar x libudev*
 tar -xf data.tar.xz
-ar x wget*
-tar -xf data.tar.xz
-ar x cabextract*
-tar -xf data.tar.xz
-ar x libpsl*
-tar -xf data.tar.xz
 ar x libpng12*
-tar -xf data.tar.xz
-ar x unrar*
-tar -xf data.tar.xz
-ar x clisp-module-gdbm*
-tar -xf data.tar.xz
-ar x perl*
-tar -xf data.tar.xz
-ar x p7zip*
-tar -xf data.tar.xz
-ar x libmspack*
 tar -xf data.tar.xz
 
 cp lib/$ARCH-linux-gnu/* target/package/files/lib/
-cp usr/lib/$ARCH-linux-gnu/libpsl* target/package/files/lib/
 cp usr/bin/* target/package/files/bin/
 cp -R etc target/package/files/
-cp -R usr/lib/clisp* target/package/files/lib/
-cp -R usr/lib/p7zip* target/package/files/lib/
 
 git clone https://github.com/Winetricks/winetricks.git
 make -C winetricks/ DESTDIR=build install
@@ -158,14 +131,6 @@ cp winetricks/build/usr/bin/winetricks target/package/files/bin/
 
 chmod +x target/package/files/bin/run.sh
 chmod +x target/package/files/bin/winetricks
-chmod +x target/package/files/bin/7zr
-chmod +x target/package/files/bin/cabextract
-chmod +x target/package/files/bin/p7zip
-chmod +x target/package/files/bin/unrar-nonfree
-chmod +x target/package/files/bin/wget
-chmod +x target/package/files/bin/perldoc
-chmod +x target/package/files/lib/clisp-2.49/gdbm/link.sh
-
 
 flatpak build-export target/repo target/package
 flatpak build-bundle --arch=$ARCH target/repo target/\[Flatpak-Riot\ Games\]$DOT_NAME/$NAME.flatpak org.RiotGames.$NAME
