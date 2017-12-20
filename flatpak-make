@@ -119,8 +119,6 @@ cp -rd "$APP" target/package/files/
 cp -rd $WINE/bin $WINE/$LIB $WINE/share target/package/files/
 cp -d $SRCBIN/winetricks target/package/files/bin/
 cp lib/$ARCH-linux-gnu/* target/package/files/lib/
-cp usr/bin/* target/package/files/bin/
-cp -R etc target/package/files/
 cp winetricks/build/usr/bin/winetricks target/package/files/bin/
 find target/package/files/$LIB -iname "*libz*" -print -delete
 [ ! -z $LDLINUX ] && cp $LDLINUX target/package/files/$LIB
@@ -135,4 +133,4 @@ flatpak build-bundle --arch=$ARCH target/repo target/\[Flatpak-Riot\ Games\]$DOT
 
 # cleanup
 mv target/\[Flatpak-Riot\ Games\]$DOT_NAME/$NAME.flatpak ./
-rm -Rf usr lib etc winetricks *.xz *.gz *.deb debian-binary target
+rm -Rf usr lib winetricks *.xz *.gz *.deb debian-binary target
