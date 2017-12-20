@@ -101,17 +101,6 @@ Type=Application
 Categories=Game;
 EOF
 
-
-set -ex
-[ -e "$APP"/icon.png ] && cp "$APP"/icon.png target/package/export/share/icons/hicolor/org.RiotGames.$NAME.png
-
-cp -rd "$APP" target/package/files/
-cp -rd $WINE/bin $WINE/$LIB $WINE/share target/package/files/
-cp -d $SRCBIN/winetricks target/package/files/bin/
-
-find target/package/files/$LIB -iname "*libz*" -print -delete
-[ ! -z $LDLINUX ] && cp $LDLINUX target/package/files/$LIB
-
 # league of legends
 curl -L -O http://security.ubuntu.com/ubuntu/pool/main/s/systemd/libudev1_229-4ubuntu10_$ARCH.deb
 curl -L -O http://mirrors.kernel.org/ubuntu/pool/main/libp/libpng/libpng12-0_1.2.54-1ubuntu1_$ARCH.deb
@@ -121,20 +110,29 @@ tar -xf data.tar.xz
 ar x libpng12*
 tar -xf data.tar.xz
 
+git clone https://github.com/Winetricks/winetricks.git
+make -C winetricks/ DESTDIR=build install
+
+set -ex
+[ -e "$APP"/icon.png ] && cp "$APP"/icon.png target/package/export/share/icons/hicolor/org.RiotGames.$NAME.png
+cp -rd "$APP" target/package/files/
+cp -rd $WINE/bin $WINE/$LIB $WINE/share target/package/files/
+cp -d $SRCBIN/winetricks target/package/files/bin/
 cp lib/$ARCH-linux-gnu/* target/package/files/lib/
 cp usr/bin/* target/package/files/bin/
 cp -R etc target/package/files/
-
-git clone https://github.com/Winetricks/winetricks.git
-make -C winetricks/ DESTDIR=build install
 cp winetricks/build/usr/bin/winetricks target/package/files/bin/
+find target/package/files/$LIB -iname "*libz*" -print -delete
+[ ! -z $LDLINUX ] && cp $LDLINUX target/package/files/$LIB
 
 chmod +x target/package/files/bin/run.sh
 chmod +x target/package/files/bin/winetricks
+cp "$0" target/package/files/flatpak-make
+
 
 flatpak build-export target/repo target/package
 flatpak build-bundle --arch=$ARCH target/repo target/\[Flatpak-Riot\ Games\]$DOT_NAME/$NAME.flatpak org.RiotGames.$NAME
-mv target/\[Flatpak-Riot\ Games\]$DOT_NAME/$NAME.flatpak ./
 
 # cleanup
+mv target/\[Flatpak-Riot\ Games\]$DOT_NAME/$NAME.flatpak ./
 rm -Rf usr lib etc winetricks *.xz *.gz *.deb debian-binary target
