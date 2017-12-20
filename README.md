@@ -11,8 +11,7 @@ Then:
 
 git clone http://www.github.com/gloriouseggroll/flatpak-leagueoflegends.git  
 cd flatpak-leagueoflegends  
- ./flatpak-make leagueoflegends leagueoflegends LeagueClient.exe  
-cd target/[Flatpak-Riot\ Games]leagueoflegends/  
+ ./flatpak-make leagueoflegends leagueoflegends LeagueClient.exe i386
 
 **To install the flatpak:**  
 flatpak --user remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo  
