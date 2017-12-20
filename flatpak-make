@@ -104,10 +104,13 @@ EOF
 # league of legends
 curl -L -O http://security.ubuntu.com/ubuntu/pool/main/s/systemd/libudev1_229-4ubuntu10_$ARCH.deb
 curl -L -O http://mirrors.kernel.org/ubuntu/pool/main/libp/libpng/libpng12-0_1.2.54-1ubuntu1_$ARCH.deb
+curl -L -O http://security.ubuntu.com/ubuntu/pool/main/o/openldap/libldap-2.4-2_2.4.42+dfsg-2ubuntu3.2_i386.deb
 
 ar x libudev*
 tar -xf data.tar.xz
 ar x libpng12*
+tar -xf data.tar.xz
+ar x libldap*
 tar -xf data.tar.xz
 
 git clone https://github.com/Winetricks/winetricks.git
