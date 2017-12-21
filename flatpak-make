@@ -7,7 +7,7 @@ NAME="$1"; shift
 APP="$1"; shift
 EXE="$1"; shift
 ARCHDEFAULT="$1"; shift
-BUILDWINE="flatpak build ../$NAME ./configure --prefix=/app --libdir=/app/lib --with-x --with-xattr --disable-tests --enable-nine --enable-win64"
+BUILDWINE="flatpak build ../$NAME ./configure --prefix=/app --libdir=/app/lib --with-x --with-xattr --disable-tests --with-d3dadapter --enable-win64"
 
 NICE_NAME=$(echo $(echo "$NAME" | sed 's/[A-Z]/ \0/g'))
 DOT_NAME=$(echo "$NICE_NAME" | tr " " . )
