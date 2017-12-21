@@ -124,6 +124,8 @@ cd wine-patched-staging-2.21
 patch -p1 < ../wine-d3d9-patches-wine-d3d9-2.21/staging-helper.patch
 patch -p1 < ../wine-d3d9-patches-wine-d3d9-2.21/wine-d3d9.patch
 
+autoreconf -f
+
 export LDAP_LIBS="../$NAME/files/lib"
 $BUILDWINE
 flatpak build ../$NAME make
