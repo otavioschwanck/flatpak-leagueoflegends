@@ -7,34 +7,26 @@ NAME="$1"; shift
 APP="$1"; shift
 EXE="$1"; shift
 ARCHDEFAULT="$1"; shift
-
-# fixme - need to compile wine, not use precompiled version
-# wine bottle location
-[ -z "$WINE" ] && WINE=~/.local/share/lutris/runners/wine/staging-2.21-i386
-# endfixme
+BUILDWINE="flatpak build ../$NAME ./configure --prefix=/app --libdir=/app/lib --with-x --with-xattr --disable-tests --enable-win64"
 
 NICE_NAME=$(echo $(echo "$NAME" | sed 's/[A-Z]/ \0/g'))
 DOT_NAME=$(echo "$NICE_NAME" | tr " " . )
 
 WINEEXE="/app/bin/wine64"
-LIB="lib64"
 ARCH="x86_64"
 
-if [[ "$ARCHDEFAULT" == "i386" ]] ; then
+if [[ $ARCHDEFAULT == i386 ]] ; then
 	WINEEXE="/app/bin/wine"
 	ARCH="i386"
-	LIB="lib"
+	BUILDWINE=${BUILDWINE//--enable-win64/}
 fi
 
 flatpak --user remote-add --no-gpg-verify --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 flatpak --user install flathub org.freedesktop.Platform/$ARCH/1.6
 flatpak --user install flathub org.freedesktop.Sdk/$ARCH/1.6
 flatpak build-init $NAME org.RiotGames.$NAME org.freedesktop.Sdk/$ARCH org.freedesktop.Platform/$ARCH 1.6
-
-# fixme - need to compile wine, not use precompiled version
-cp -rd $WINE/bin $WINE/$LIB $WINE/share $NAME/files/
-rm $NAME/files/share/applications/wine.desktop
-# endfixme
+flatpak build $NAME mkdir -p /app/bin/
+flatpak build $NAME mkdir -p /app/share/applications/
 
 cat << EOF > $NAME/files/bin/run.sh
 #!/bin/bash
@@ -112,12 +104,12 @@ If you are looking for saved games, they are most likely there.
 EOF
 
 # league of legends
-curl -L -O http://archive.ubuntu.com/ubuntu/pool/main/libp/libpng/libpng_1.2.54.orig.tar.xz
 curl -L -O http://archive.ubuntu.com/ubuntu/pool/main/o/openldap/openldap_2.4.42+dfsg.orig.tar.gz
 curl -L https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks -o $NAME/files/bin/winetricks
+curl -L -O https://github.com/wine-compholio/wine-patched/archive/staging-2.21.tar.gz
+curl -L -O https://github.com/sarnex/wine-d3d9-patches/archive/wine-d3d9-2.21.tar.gz
 
-tar -xf *.gz
-tar -xf *.xz
+cat *.tar.gz | tar -xzf - -i
 
 cd openldap-2.4.42+dfsg
 flatpak build ../$NAME ./configure --prefix=/app --enable-crypt --enable-dynamic --with-threads --disable-wrappers --disable-spasswd --without-cyrus-sasl --disable-bdb --disable-hdb
@@ -125,11 +117,18 @@ flatpak build ../$NAME make
 flatpak build ../$NAME make install
 cd ..
 
-cd libpng-1.2.54
-flatpak build ../$NAME ./configure --prefix=/app --disable-static
+cd wine-patched-staging-2.21
+patch -p1 < ../wine-d3d9-patches-wine-d3d9-2.21/staging-helper.patch
+patch -p1 < ../wine-d3d9-patches-wine-d3d9-2.21/wine-d3d9.patch
+
+export LDAP_LIBS="../$NAME/files/lib"
+$BUILDWINE
 flatpak build ../$NAME make
 flatpak build ../$NAME make install
 cd ..
+
+rm $NAME/files/share/applications/wine.desktop
+# endfixme
 
 set -ex
 chmod +x $NAME/files/bin/run.sh
@@ -141,4 +140,4 @@ flatpak build-export repo $NAME
 flatpak build-bundle --arch=$ARCH repo $NAME.flatpak org.RiotGames.$NAME
 
 # cleanup
-rm -Rf libpng* openldap* repo $NAME
+rm -Rf openldap* repo $NAME wine-* staging* 
