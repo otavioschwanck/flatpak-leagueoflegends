@@ -7,7 +7,7 @@ NAME="$1"; shift
 APP="$1"; shift
 EXE="$1"; shift
 ARCHDEFAULT="$1"; shift
-BUILDWINE="flatpak build ../$NAME ./configure --prefix=/app --libdir=/app/lib --with-x --with-xattr --disable-tests --enable-win64"
+BUILDWINE="flatpak build ../$NAME ./configure --prefix=/app --libdir=/app/lib --with-x --with-xattr --disable-tests --enable-nine --enable-win64"
 
 NICE_NAME=$(echo $(echo "$NAME" | sed 's/[A-Z]/ \0/g'))
 DOT_NAME=$(echo "$NICE_NAME" | tr " " . )
@@ -20,6 +20,9 @@ if [[ $ARCHDEFAULT == i386 ]] ; then
 	ARCH="i386"
 	BUILDWINE=${BUILDWINE//--enable-win64/}
 fi
+
+NB_CORES=$(grep -c '^processor' /proc/cpuinfo)
+export MAKEFLAGS="-j$((NB_CORES+1)) -l${NB_CORES}"
 
 flatpak --user remote-add --no-gpg-verify --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 flatpak --user install flathub org.freedesktop.Platform/$ARCH/1.6
