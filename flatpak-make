@@ -41,6 +41,8 @@ export GPU_MAX_HEAP_SIZE="100"
 export GPU_MAX_ALLOC_PERCENT="100"
 export MESA_GLTHREAD=true
 export __GL_THREADED_OPTIMIZATIONS=1
+export __PBA_CB_HEAP=64 
+export __PBA_GEO_HEAP=256
 
 if ! [ -e "\$WINEPREFIX/drive_c/Riot Games" ] ; then
 	winetricks -q directx9 winxp &&
@@ -65,7 +67,7 @@ elif [ -e run.sh ] ; then
 	sh run.sh \$@
 	exit $?
 else
-	\$WINEEXE __PBA_CB_HEAP=64 __PBA_GEO_HEAP=256 "\$WINEPREFIX/drive_c/Riot Games/League of Legends/$EXE" \$@
+	\$WINEEXE "\$WINEPREFIX/drive_c/Riot Games/League of Legends/$EXE" \$@
 	exit $?
 fi
 EOF
