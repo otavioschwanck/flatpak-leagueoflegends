@@ -65,7 +65,7 @@ elif [ -e run.sh ] ; then
 	sh run.sh \$@
 	exit $?
 else
-	\$WINEEXE "\$WINEPREFIX/drive_c/Riot Games/League of Legends/$EXE" \$@
+	\$WINEEXE __PBA_CB_HEAP=64 __PBA_GEO_HEAP=256 "\$WINEPREFIX/drive_c/Riot Games/League of Legends/$EXE" \$@
 	exit $?
 fi
 EOF
@@ -85,14 +85,14 @@ EOF
 cat << EOF > $NAME/files/leagueoflegends.reg
 REGEDIT4
 
-[HKEY_CURRENT_USER\Software\Wine\DllRedirects]
-"wined3d"="wined3d-csmt.dll"
-
 [HKEY_CURRENT_USER\Software\Wine\Direct3D]
 "UseGLSL"="disabled"
 
 [HKEY_CURRENT_USER\Software\Wine\DirectInput]
 "MouseWarpOverride"="enable"
+
+[HKEY_CURRENT_USER\Software\Wine\X11 Driver]
+"GrabFullScreen"="Y"
 
 [HKEY_CURRENT_USER\Software\Wine\DllOverrides]
 "msvcp140"="native,builtin"
@@ -115,8 +115,9 @@ EOF
 # league of legends
 curl -L -O http://archive.ubuntu.com/ubuntu/pool/main/o/openldap/openldap_2.4.42+dfsg.orig.tar.gz
 curl -L https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks -o $NAME/files/bin/winetricks
-curl -L -O https://github.com/wine-compholio/wine-patched/archive/staging-2.21.tar.gz
-curl -L -O https://github.com/sarnex/wine-d3d9-patches/archive/wine-d3d9-2.21.tar.gz
+curl -L -O https://github.com/wine-mirror/wine/archive/wine-3.4.tar.gz
+curl -L -O https://github.com/wine-staging/wine-staging/archive/v3.4.tar.gz
+curl -L -O https://github.com/Firerat/wine-pba/archive/heap_size_envvars-v3.4.tar.gz
 
 cat *.tar.gz | tar -xzf - -i
 
@@ -126,9 +127,17 @@ flatpak build ../$NAME make
 flatpak build ../$NAME make install
 cd ..
 
-cd wine-patched-staging-2.21
-patch -p1 < ../wine-d3d9-patches-wine-d3d9-2.21/staging-helper.patch
-patch -p1 < ../wine-d3d9-patches-wine-d3d9-2.21/wine-d3d9.patch
+cd wine-wine-3.4
+# install staging
+../wine-staging-3.4/patches/patchinstall.sh --all
+
+# install pba patches
+for _f in ../wine-pba-heap_size_envvars-v3.4/patches/00*.patch; do
+    echo "applying ${_f##*/}"
+    patch -Np1 -i  "${_f}" && continue
+    echo "oh nooooo.. ${_f##*/} broke somehow"
+    break
+done
 
 autoreconf -f
 
