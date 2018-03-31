@@ -45,7 +45,7 @@ export __PBA_CB_HEAP=64
 export __PBA_GEO_HEAP=256
 
 if ! [ -e "\$WINEPREFIX/drive_c/Riot Games" ] ; then
-	winetricks -q directx9 winxp &&
+	winetricks -q d3dx9 winxp &&
 	curl -L -o "\$WINEPREFIX/drive_c/LeagueInstallerNA.exe" https://riotgamespatcher-a.akamaihd.net/releases/live/installer/deploy/League%20of%20Legends%20installer%20NA.exe
 	\$WINEEXE regedit /C /app/$NAME.reg &&
 	cp /app/$NAME.md "\$WINEPREFIX/$NAME.md" &&
